@@ -79,6 +79,7 @@ const FeedbackSchema = new Schema<IFeedback>(
     }
 );
 
+// Add indexes for faster queries
 FeedbackSchema.index({ staus: 1 });
 FeedbackSchema.index({ category: 1 });
 FeedbackSchema.index({ ai_priority: -1 });
