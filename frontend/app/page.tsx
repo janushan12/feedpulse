@@ -2,12 +2,11 @@
 
 import api from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, CheckCircle, Loader2, MessageSquarePlus } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader2, MessageSquarePlus, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-// Zod validation schema
 const feedbackSchema = z.object({
   title: z
     .string()
@@ -70,10 +69,12 @@ export default function Home() {
 
   if (submitState === 'success') {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 bg-gray-50">
         <div className="text-center max-w-md">
           <div className="flex justify-center mb-4">
-            <CheckCircle className="h-16 w-16 text-green-500" />
+            <div className="h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
+              <CheckCircle className="h-10 w-10 text-green-500" />
+            </div>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Thanks for your feedback!
@@ -92,190 +93,237 @@ export default function Home() {
     )
   }
 
-  // form
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
-      <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
-          <MessageSquarePlus className="h-4 w-4" />
-          Share your feedback
+    <div className="min-h-[calc(100vh-64px)] bg-gray-50 flex items-stretch">
+      <div className="hidden lg:flex lg:w-5/12 bg-indigo-600 flex-col justify-between p-10 relative overflow-hidden">
+
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full -translate-y-32 translate-x-32 opacity-50" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-700 rounded-full translate-y-24 -translate-x-24 opacity-50" />
+
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 bg-white/20 text-white px-3 py-1.5 rounded-full text-sm font-medium mb-8">
+            <Sparkles className="h-4 w-4" />
+            AI-Powered Feedback
+          </div>
+          <h1 className="text-3xl font-bold text-white leading-tight mb-4">
+            Help us build a<br /> better product!
+          </h1>
+          <p className="text-indigo-100 text-base leading-relaxed">
+            Your feedback is instantly analyzed by AI and sent straight to our product team. We read every single submission and use them to prioritize our roadmap.
+          </p>
         </div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-3">
-          Help us build a better product!
-        </h1>
-        <p className="text-gray-500 text-lg">
-          Your feedback is instantly analyzed by AI and sent straight to our product team. We read every single submission and use them to prioritize our roadmap.
-        </p>
+
+        <div className="relative z-10 space-y-3">
+          {[
+            {
+              emoji: '🤖',
+              title: 'AI Analysed',
+              desc: 'Every submission is instantly categorised and prioritised',
+            },
+            {
+              emoji: '⚡',
+              title: 'Fast Review',
+              desc: 'Your feedback reaches the team immediately',
+            },
+            {
+              emoji: '🔒',
+              title: 'Private & Safe',
+              desc: 'Your information is never shared or sold',
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="flex items-start gap-3 bg-white/10 rounded-xl p-3 backdrop-blur-sm"
+            >
+              <span className="text-xl mt-0.5">{item.emoji}</span>
+              <div>
+                <p className="text-white font-medium text-sm">{item.title}</p>
+                <p className="text-indigo-200 text-xs mt-0.5">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* error banner */}
-      {submitState === 'error' && (
-        <div className="mb-6 flex items-start gap-3 bg-red-50 border border-red-200 rounded-lg p-4">
-          <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
-          <p className="text-red-700 text-sm">{errorMessage}</p>
-        </div>
-      )}
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-10 overflow-y-auto">
+        <div className="w-full max-w-lg">
 
-      {/* form card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Title <span className="text-red-500">*</span>
-            </label>
-            <input
-              {...register('title')}
-              type="text"
-              placeholder="e.g. Dark mode support for the Dashboard"
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${errors.title
-                ? 'border-red-400 bg-red-50'
-                : 'border-gray-300 bg-white hover:border-gray-400'
-                }`}
-            />
-            {errors.title && (
-              <p className="mt-1.5 text-xs text-red-600">{errors.title.message}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Category <span className="text-red-500">*</span>
-            </label>
-            <select
-              {...register('category')}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${errors.category
-                ? 'border-red-400 bg-red-50'
-                : 'border-gray-300 bg-white hover:border-gray-400'
-                }`}
-            >
-              <option value="">Select a category...</option>
-              <option value="Bug">🐛 Bug</option>
-              <option value="Feature Request">✨ Feature Request</option>
-              <option value="Improvement">⚡ Improvement</option>
-              <option value="Other">🔖 Other</option>
-            </select>
-            {errors.category && (
-              <p className="mt-1.5 text-xs text-red-600">{errors.category.message}</p>
-            )}
-          </div>
-          <div>
-            <div className="flex justify-between items-center mb-1.5">
-              <label className="block text-sm font-medium text-gray-700">
-                Description <span className="text-red-500">*</span>
-              </label>
-              <span
-                className={`text-xs tabular-nums ${descriptionCharCount < 20
-                  ? 'text-red-500'
-                  : descriptionCharCount > 1800
-                    ? 'text-orange-500'
-                    : 'text-gray-400'
-                  }`}
-              >
-                {descriptionCharCount} / 2000
-              </span>
-            </div>
-            <textarea
-              {...register('description')}
-              rows={5}
-              placeholder="Describe your feedback in detail. What problem does it solve? What would the ideal solution look like? (min 20 characters)"
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${errors.description
-                ? 'border-red-400 bg-red-50'
-                : 'border-gray-300 bg-white hover:border-gray-400'
-                }`}
-            />
-            {errors.description && (
-              <p className="mt-1.5 text-xs text-red-600">
-                {errors.description.message}
-              </p>
-            )}
-            <div className="mt-2 h-1 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${descriptionCharCount >= 20 ? 'bg-green-400' : 'bg-indigo-400'
-                  }`}
-                style={{ width: `${Math.min((descriptionCharCount / 20) * 100, 100)}%` }}
-              />
-            </div>
-            {descriptionCharCount < 20 && descriptionCharCount > 0 && (
-              <p className="mt-1 text-xs text-gray-400">
-                {20 - descriptionCharCount} more characters to go!
-              </p>
-            )}
-          </div>
-          {/* divider */}
-          <div className="border-t border-gray-100 pt-4">
-            <p className="text-xs text-gray-400 mb-4">
-              Optional - helps us follow up with you
+          <div className="lg:hidden text-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-900">Share your feedback</h1>
+            <p className="text-gray-500 text-sm mt-1">
+              Help us build a better product
             </p>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Your name
-                </label>
-                <input
-                  {...register('submitterName')}
-                  type="text"
-                  placeholder="John Doe"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white hover:border-gray-400 transition-colors"
-                />
+          {/* Desktop header */}
+          <div className="hidden lg:block mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Submit feedback</h2>
+            <p className="text-gray-500 text-sm mt-1">
+              Fill in the form below — takes less than 2 minutes
+            </p>
+          </div>
+
+          {/* error banner */}
+          {submitState === 'error' && (
+            <div className="mb-6 flex items-start gap-3 bg-red-50 border border-red-200 rounded-lg p-4">
+              <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
+              <p className="text-red-700 text-sm">{errorMessage}</p>
+            </div>
+          )}
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+              {/* Title + Category side by side */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Title */}
+                <div className="sm:col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    {...register('title')}
+                    type="text"
+                    placeholder="Brief title..."
+                    className={`w-full px-3 py-2 border rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${errors.title
+                      ? 'border-red-400 bg-red-50'
+                      : 'border-gray-300 bg-white hover:border-gray-400'
+                      }`}
+                  />
+                  {errors.title && (
+                    <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>
+                  )}
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    {...register('category')}
+                    className={`w-full px-3 py-2 border rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white transition-colors ${errors.category
+                      ? 'border-red-400'
+                      : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                  >
+                    <option value="">Select...</option>
+                    <option value="Bug">🐛 Bug</option>
+                    <option value="Feature Request">✨ Feature Request</option>
+                    <option value="Improvement">📈 Improvement</option>
+                    <option value="Other">💬 Other</option>
+                  </select>
+                  {errors.category && (
+                    <p className="mt-1 text-xs text-red-600">{errors.category.message}</p>
+                  )}
+                </div>
               </div>
+
+              {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Email address
-                </label>
-                <input
-                  {...register('submitterEmail')}
-                  type="email"
-                  placeholder="john.doe@example.com"
-                  className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white transition-colors ${errors.submitterEmail
-                    ? 'border-red-400'
-                    : 'border-gray-300 hover:border-gray-400'
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Description <span className="text-red-500">*</span>
+                  </label>
+                  <span
+                    className={`text-xs tabular-nums ${descriptionCharCount < 20
+                      ? 'text-red-500'
+                      : descriptionCharCount > 1800
+                        ? 'text-orange-500'
+                        : 'text-gray-400'
+                      }`}
+                  >
+                    {descriptionCharCount} / 2000
+                  </span>
+                </div>
+                <textarea
+                  {...register('description')}
+                  rows={4}
+                  placeholder="Describe your feedback in detail. What problem does it solve? (min. 20 characters)"
+                  className={`w-full px-3 py-2 border rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none transition-colors ${errors.description
+                    ? 'border-red-400 bg-red-50'
+                    : 'border-gray-300 bg-white hover:border-gray-400'
                     }`}
                 />
-                {errors.submitterEmail && (
-                  <p className="mt-1.5 text-xs text-red-600">
-                    {errors.submitterEmail.message}
+                {errors.description && (
+                  <p className="mt-1 text-xs text-red-600">{errors.description.message}</p>
+                )}
+                {/* Progress bar */}
+                <div className="mt-1.5 h-1 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${descriptionCharCount >= 20 ? 'bg-green-400' : 'bg-indigo-400'
+                      }`}
+                    style={{ width: `${Math.min((descriptionCharCount / 20) * 100, 100)}%` }}
+                  />
+                </div>
+                {descriptionCharCount < 20 && descriptionCharCount > 0 && (
+                  <p className="mt-1 text-xs text-gray-400">
+                    {20 - descriptionCharCount} more characters needed
                   </p>
                 )}
               </div>
-            </div>
-          </div>
-          <button
-            type="submit"
-            disabled={submitState === 'loading'}
-            className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-medium py-3 px-6 rounded-lg transition-colors text-sm"
-          >
-            {submitState === 'loading' ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              <>
-                <MessageSquarePlus className="h-4 w-4" />
-                Submit Feedback
-              </>
-            )}
-          </button>
 
-          <p className="text-center text-xs text-gray-400">
-            Your feedback is analyzed by AI to help priorities product decisions.
+              {/* Name + Email side by side */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Your name
+                    <span className="text-gray-400 font-normal ml-1">(optional)</span>
+                  </label>
+                  <input
+                    {...register('submitterName')}
+                    type="text"
+                    placeholder="Jane Smith"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white hover:border-gray-400 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                    <span className="text-gray-400 font-normal ml-1">(optional)</span>
+                  </label>
+                  <input
+                    {...register('submitterEmail')}
+                    type="email"
+                    placeholder="jane@example.com"
+                    className={`w-full px-3 py-2 border rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white transition-colors ${errors.submitterEmail
+                      ? 'border-red-400'
+                      : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                  />
+                  {errors.submitterEmail && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.submitterEmail.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Submit button */}
+              <button
+                type="submit"
+                disabled={submitState === 'loading'}
+                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-medium py-2.5 px-6 rounded-lg transition-colors text-sm mt-2"
+              >
+                {submitState === 'loading' ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    Submit feedback
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+
+          <p className="text-center text-xs text-gray-400 mt-4">
+            Analysed by AI · Never shared · Read by the team
           </p>
-        </form>
-      </div>
-
-      {/* Info cards */}
-      <div className="mt-8 grid grid-cols-3 gap-4">
-        {[
-          { emoji: '🤖', title: 'AI Analysed', desc: 'Every submission is instantly categorised' },
-          { emoji: '⚡', title: 'Fast Review', desc: 'Team sees your feedback right away' },
-          { emoji: '🔒', title: 'Private', desc: 'Your info is never shared or sold' },
-        ].map((item) => (
-          <div key={item.title} className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div className="text-2xl mb-2">{item.emoji}</div>
-            <div className="text-sm font-medium text-gray-800">{item.title}</div>
-            <div className="text-xs text-gray-400 mt-1">{item.desc}</div>
-          </div>
-        ))}
+        </div>
       </div>
     </div>
   )
