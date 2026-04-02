@@ -161,15 +161,47 @@ Admin credentials:
 
 ---
 
+## Running with Docker
+
+The easiest way to run FeedPulse - no manual MongoDB setup needed.
+
+### Prerequisities
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) installed and running
+
+### Steps
+
+**1. Create a `.env` file in the root folder:**
+```env
+JWT_SECRET=JWT_secret_key_here
+GEMINI_API_KEY=gemini_api_key_here
+ADMIN_EMAIL=admin@feedpulse.com
+ADMIN_PASSWORD=admin123
+```
+
+**2.Run with single command:**
+```bash
+docker-compose up --build
+```
+
+**3. Open the app:**
+- Feedback form: http://localhost:3000
+- Admin dashboard: http://localhost:3000/dashboard
+
+**4. To stop:**
+```bash
+docker-compose down
+```
+
+---
+
 ## What I Would Build Next
 
 If I had more time, I would add:
 
 1. **Email notifications** — send a confirmation email to users who provide their email address when feedback is submitted
 2. **Upvote system** — let users upvote existing feedback so popular requests bubble up naturally
-3. **Docker support** — containerise both services so the app runs with a single `docker-compose up` command
-4. **Unit tests** — Jest tests for all API endpoints and the Gemini service
-5. **Real authentication** — replace the hardcoded admin credentials with a proper User collection and bcrypt password hashing
-6. **Webhook support** — notify Slack or Teams when high-priority feedback comes in
+3. **Unit tests** — Jest tests for all API endpoints and the Gemini service
+4. **Real authentication** — replace the hardcoded admin credentials with a proper User collection and bcrypt password hashing
+5. **Webhook support** — notify Slack or Teams when high-priority feedback comes in
 
 ---
