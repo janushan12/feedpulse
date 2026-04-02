@@ -132,7 +132,7 @@ export const updateFeedback = async (req: Request, res: Response) => {
         const feedback = await Feedback.findByIdAndUpdate(
             req.params.id,
             { status },
-            { new: true }
+            { returnDocument: 'after' }
         )
 
         if (!feedback) return sendError(res, 'Feedback not found', 404);
@@ -161,6 +161,8 @@ export const reanalyzeFeedback = async (req: Request, res: Response) => {
 
         const analysis = await analyzeFeedback(feedback.title, feedback.description);
 
+        console.log('📊 Analysis result:', analysis);
+
         if (!analysis) return sendError(res, 'AI analysis failed. Please try again.', 500)
 
         const updatedFeedback = await Feedback.findByIdAndUpdate(
@@ -173,7 +175,7 @@ export const reanalyzeFeedback = async (req: Request, res: Response) => {
                 ai_tags: analysis.tags,
                 ai_processed: true,
             },
-            { new: true }
+            { returnDocument: 'after' }
         )
 
         return sendSuccess(res, updatedFeedback, 'Feedback re-analyzed successfully');

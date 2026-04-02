@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 const CATEGORIES = ['All', 'Bug', 'Feature Request', 'Improvement', 'Other'];
-const STATUSES = ['All', 'New', 'In Review', 'Resolved'];
+const STATUSES = ['All', 'New', 'In_Review', 'Resolved'];
 const SORT_OPTIONS = [
     { value: '-createdAt', label: 'Newest first' },
     { value: 'createdAt', label: 'Oldest first' },
@@ -92,19 +92,32 @@ export default function DashboardPage() {
     }, [fetchFeedback, router]);
 
     const updateStatus = async (id: string, newStatus: string) => {
-        await api.patch(`/feedback/${id}`, { status: newStatus });
-        fetchFeedback();
-    }
+        try {
+            await api.patch(`/feedback/${id}`, { status: newStatus });
+            fetchFeedback();
+        } catch {
+            alert('Failed to update status. Please try again.');
+        }
+    };
 
     const deleteFeedback = async (id: string) => {
-        if (!confirm('Delete this feedback?')) return;
-        await api.delete(`/feedback/${id}`);
-        fetchFeedback();
-    }
+        if (!confirm('Delete this feedback? This cannot be undone.')) return;
+        try {
+            await api.delete(`/feedback/${id}`);
+            fetchFeedback();
+        } catch {
+            alert('Failed to delete. Please try again.');
+        }
+    };
 
     const reanalyze = async (id: string) => {
-        await api.post(`/feedback/${id}/reanalyze`);
-        fetchFeedback();
+        try {
+            await api.post(`/feedback/${id}/reanalyze`);
+            fetchFeedback();
+        } catch (err: unknown) {
+            const axiosError = err as { response?: { data?: { message?: string } } };
+            alert(axiosError.response?.data?.message || 'AI reanalysis failed. Check your Gemini API key.');
+        }
     }
 
     const loadSummary = async () => {
@@ -307,7 +320,7 @@ export default function DashboardPage() {
                                                 className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                             >
                                                 <option value="New">New</option>
-                                                <option value="In Review">In Review</option>
+                                                <option value="In_Review">In Review</option>
                                                 <option value="Resolved">Resolved</option>
                                             </select>
                                         </td>

@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import feedbackRoutes from './routes/feedback.routes'
 import authRoutes from './routes/auth.routes'
 
-dotenv.config(); // load env variables first
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
