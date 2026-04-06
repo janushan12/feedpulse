@@ -74,7 +74,6 @@ const FeedbackSchema = new Schema<IFeedback>(
         },
     },
     {
-        // Automatically add CreatedAt & UpdatedAt
         timestamps: true,
     }
 );
